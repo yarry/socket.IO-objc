@@ -129,7 +129,24 @@ NSString* const SocketIOException = @"SocketIOException";
         // create a query parameters string
         NSMutableString *query = [[NSMutableString alloc] initWithString:@""];
         [params enumerateKeysAndObjectsUsingBlock: ^(id key, id value, BOOL *stop) {
-            [query appendFormat:@"&%@=%@", key, value];
+
+            static NSString *const kCharactersToBeEscapedInQueryString = @":/?&=;+!@#$()',*";
+            static NSString *const kCharactersToLeaveUnescapedInQueryStringPairKey = @"[].";
+
+            NSString *encodedValue = (__bridge_transfer NSString *) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                    (__bridge CFStringRef) [NSString stringWithFormat:@"%@", value],
+                    (__bridge CFStringRef) kCharactersToLeaveUnescapedInQueryStringPairKey,
+                    (__bridge CFStringRef) kCharactersToBeEscapedInQueryString,
+                    CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+
+            NSString *encodedKey = (__bridge_transfer NSString *) CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                    (__bridge CFStringRef) [NSString stringWithFormat:@"%@", key],
+                    (__bridge CFStringRef) kCharactersToLeaveUnescapedInQueryStringPairKey,
+                    (__bridge CFStringRef) kCharactersToBeEscapedInQueryString,
+                    CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding));
+
+            [query appendFormat:@"&%@=%@", encodedKey, encodedValue];
+
         }];
         
         // do handshake via HTTP request
