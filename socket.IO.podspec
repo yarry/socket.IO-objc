@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "socket.IO"
-  s.version      = "0.4.1.1"
+  s.version      = "0.5.2"
   s.summary      = "socket.io v0.7.2+ for iOS devices."
   s.description  = <<-DESC
     Interface to communicate between Objective C and Socket.IO with the help of websockets. It's based on fpotter's socketio-cocoa and uses other libraries/classes like SocketRocket.
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
 
   s.source_files = '*.{h,m}'
 
-  s.ios.deployment_target = '5.0'
+  s.ios.deployment_target = '6.0'
   s.requires_arc = true
 
   s.dependency 'SocketRocket', '~> 0.2'
